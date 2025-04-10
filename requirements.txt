@@ -1,0 +1,6 @@
+flask
+pyrebase4
+pyzbar
+Pillow
+qrcode
+

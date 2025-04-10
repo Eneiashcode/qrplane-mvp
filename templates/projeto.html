@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Projeto QrPlane</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f6f6f6;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .header {
+            background-color: #003366;
+            color: white;
+            padding: 20px;
+            font-size: 22px;
+        }
+
+        .container {
+            padding: 30px 20px;
+        }
+
+        .menu button {
+            width: 100%;
+            max-width: 320px;
+            padding: 18px;
+            margin: 12px auto;
+            font-size: 17px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .menu button:hover {
+            background-color: #0056b3;
+        }
+
+        .back {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .back a {
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        Conteúdo do Projeto
+    </div>
+
+    <div class="container">
+        <div class="menu">
+            <button onclick="alert('Abrir Imagens 3D')">🖼️ Imagens 3D</button>
+            <button onclick="alert('Abrir Tabelas')">📊 Tabelas</button>
+            <button onclick="alert('Abrir Vídeos Explicativos')">🎥 Vídeos Explicativos</button>
+            <button onclick="alert('Abrir Meu Projeto')">📄 Meu Projeto</button>
+        </div>
+
+        <div class="back">
+            <a href="/home">← Voltar para início</a>
+        </div>
+    </div>
+</body>
+</html>

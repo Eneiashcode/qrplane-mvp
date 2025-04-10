@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>QrPlane - Início</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom right, #e0f7fa, #ffffff);
+            color: #003366;
+        }
+
+        .header {
+            background-color: #003366;
+            color: white;
+            text-align: center;
+            padding: 25px 10px;
+            font-size: 22px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .botao-camera {
+            width: 100%;
+            padding: 18px;
+            font-size: 18px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .botao-camera:hover {
+            background-color: #1e7e34;
+            transform: scale(1.02);
+        }
+
+        .historico {
+            text-align: left;
+            background-color: #f1f1f1;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        .historico h3 {
+            margin-top: 0;
+        }
+
+        .historico ul {
+            padding-left: 20px;
+        }
+
+        .logout {
+            margin-top: 30px;
+            font-size: 14px;
+        }
+
+        .logout a {
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        QrPlane - Bem-vindo
+    </div>
+
+    <div class="container">
+        <a href="/ler_qr_camera" class="botao-camera">📷 Ler QRPlane</a>
+
+        <div class="historico">
+            <h3>🕘 Últimos Projetos Escaneados:</h3>
+            <ul>
+                {% for item in historico %}
+                    <li>{{ item.projeto }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="logout">
+            <a href="/logout">Sair</a>
+        </div>
+    </div>
+</body>
+</html>

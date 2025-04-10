@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Ler QRPlane</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #reader {
+            width: 300px;
+            margin: auto;
+        }
+
+        .back {
+            margin-top: 20px;
+        }
+
+        .back a {
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h2>📷 Escaneie seu QRPlane</h2>
+    <div id="reader"></div>
+
+    <div class="back">
+        <a href="/home">← Voltar</a>
+    </div>
+
+    <script>
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log(`QR Lido: ${decodedText}`);
+            fetch('/salvar_qr_lido', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ qr_data: decodedText })
+            }).then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                }
+            });
+            html5QrcodeScanner.clear();
+        }
+
+        const html5QrcodeScanner = new Html5QrcodeScanner("reader", {
+            fps: 10,
+            qrbox: 250
+        });
+        html5QrcodeScanner.render(onScanSuccess);
+    </script>
+</body>
+</html>

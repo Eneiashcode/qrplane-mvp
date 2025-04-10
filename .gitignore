@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Arquivos de ambiente/virtualenv
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Uploads e arquivos temporários
+uploads/
+*.log
+*.tmp
+*.bak
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Firebase - nunca suba suas chaves reais
+firebase_config.py
+
+# VSCode
+.vscode/
+
+# Arquivos do Render ou Git
+*.sqlite3
+*.db
+*.env
+*.idea/
+*.swp
