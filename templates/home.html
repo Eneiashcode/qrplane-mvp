@@ -21,6 +21,7 @@
         }
 
         .container {
+            width: 90%;
             max-width: 400px;
             margin: 40px auto;
             padding: 20px;
@@ -28,8 +29,10 @@
         }
 
         .botao-camera {
+            display: block;
             width: 100%;
-            padding: 18px;
+            max-width: 100%;
+            padding: 16px;
             font-size: 18px;
             background-color: #28a745;
             color: white;
@@ -38,7 +41,7 @@
             margin-bottom: 30px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
             text-decoration: none;
-            display: inline-block;
+            box-sizing: border-box;
         }
 
         .botao-camera:hover {
