@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, session, flash, jsonify, send_from_directory
 from firebase_config import firebase_login
 import json
 import os
@@ -52,7 +52,24 @@ def home():
 def projeto():
     if 'user' not in session:
         return redirect('/')
-    return render_template('projeto.html')
+
+    historico = carregar_historico()
+    projetos_usuario = [h for h in historico if h['usuario'] == session['user']]
+    if not projetos_usuario:
+        return "Nenhum projeto encontrado."
+
+    ultimo_projeto = projetos_usuario[-1]['projeto']
+    projeto_id = ultimo_projeto.split("://")[-1]
+    pasta = f'projetos/{projeto_id}'
+
+    arquivos = {
+        'pdf': f'{pasta}/planta.pdf',
+        'imagem': f'{pasta}/imagem3d.png',
+        'tabela': f'{pasta}/blocos.xlsx',
+        'video': f'{pasta}/video.mp4'
+    }
+
+    return render_template('projeto.html', arquivos=arquivos, projeto_nome=projeto_id)
 
 
 @app.route('/visualizar/<tipo>')
@@ -80,6 +97,11 @@ def salvar_qr_lido():
         salvar_historico(session['user'], qr_data)
         return redirect('/projeto')
     return jsonify({'error': 'QR inválido'}), 400
+
+
+@app.route('/projetos/<path:filename>')
+def arquivos_projeto(filename):
+    return send_from_directory('projetos', filename)
 
 
 @app.route('/logout')
