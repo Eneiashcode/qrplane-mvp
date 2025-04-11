@@ -120,8 +120,11 @@
                             <input type="hidden" name="projeto" value="{{ item.projeto }}">
                             <button type="submit" class="btn-historico">
                                 {{ item.projeto }}
-                                <small>Último acesso: {{ item.timestamp | replace('T', ' ')[:19] }}</small>
+                                {% if item.timestamp %}
+                                    <small>Último acesso: {{ item.timestamp | replace('T', ' ') | truncate(19, True) }}</small>
+                                {% endif %}
                             </button>
+
                         </form>
                     </li>
                 {% endfor %}
