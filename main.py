@@ -63,10 +63,10 @@ def projeto():
     pasta = f'projetos/{projeto_id}'
 
     arquivos = {
-        'pdf': f'{pasta}/planta.pdf',
-        'imagem': f'{pasta}/imagem3d.png',
-        'tabela': f'{pasta}/blocos.xlsx',
-        'video': f'{pasta}/video.mp4'
+        'pdf': f'projetos/{projeto_id}/planta.pdf',
+        'imagem': f'projetos/{projeto_id}/imagem3d.png',
+        'tabela': f'projetos/{projeto_id}/blocos.xlsx',
+        'video': f'projetos/{projeto_id}/video.mp4'
     }
 
     return render_template('projeto.html', arquivos=arquivos, projeto_nome=projeto_id)
