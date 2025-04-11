@@ -47,10 +47,10 @@
 <body>
     <h2>📂 Projeto: {{ projeto_nome }}</h2>
 
-    <a href="/{{ arquivos.pdf }}" class="btn" target="_blank">📄 Ver Planta PDF</a>
-    <a href="/{{ arquivos.imagem }}" class="btn" target="_blank">🖼️ Ver Imagem 3D</a>
-    <a href="/{{ arquivos.tabela }}" class="btn" target="_blank">📊 Ver Tabela de Blocos</a>
-    <a href="/{{ arquivos.video }}" class="btn" target="_blank">🎥 Ver Vídeo</a>
+    <a href="{{ url_for('arquivos_projeto', filename=arquivos.pdf.replace('projetos/', '')) }}" class="btn" target="_blank">📄 Ver Planta PDF</a>
+    <a href="{{ url_for('arquivos_projeto', filename=arquivos.imagem.replace('projetos/', '')) }}" class="btn" target="_blank">🖼️ Ver Imagem 3D</a>
+    <a href="{{ url_for('arquivos_projeto', filename=arquivos.tabela.replace('projetos/', '')) }}" class="btn" target="_blank">📊 Ver Tabela de Blocos</a>
+    <a href="{{ url_for('arquivos_projeto', filename=arquivos.video.replace('projetos/', '')) }}" class="btn" target="_blank">🎥 Ver Vídeo</a>
 
     <div class="back">
         <a href="/home">← Voltar</a>
