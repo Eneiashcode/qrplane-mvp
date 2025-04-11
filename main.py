@@ -8,13 +8,11 @@ app.secret_key = 'supersecretkey'
 
 HISTORICO_FILE = 'historico.json'
 
-
 def carregar_historico():
     if os.path.exists(HISTORICO_FILE):
         with open(HISTORICO_FILE, 'r') as f:
             return json.load(f)
     return []
-
 
 def salvar_historico(email, projeto):
     historico = carregar_historico()
@@ -22,11 +20,9 @@ def salvar_historico(email, projeto):
     with open(HISTORICO_FILE, 'w') as f:
         json.dump(historico, f)
 
-
 @app.route('/')
 def login():
     return render_template('login.html')
-
 
 @app.route('/auth', methods=['POST'])
 def auth():
@@ -38,7 +34,6 @@ def auth():
     else:
         return render_template('login.html', erro='Email ou senha inválidos.')
 
-
 @app.route('/home')
 def home():
     if 'user' not in session:
@@ -46,7 +41,6 @@ def home():
     historico = carregar_historico()
     historico_usuario = [h for h in historico if h['usuario'] == session['user']]
     return render_template('home.html', historico=historico_usuario)
-
 
 @app.route('/projeto')
 def projeto():
@@ -63,14 +57,13 @@ def projeto():
     pasta = f'projetos/{projeto_id}'
 
     arquivos = {
-        'pdf': f'projetos/{projeto_id}/planta.pdf',
-        'imagem': f'projetos/{projeto_id}/imagem3d.png',
-        'tabela': f'projetos/{projeto_id}/blocos.xlsx',
-        'video': f'projetos/{projeto_id}/video.mp4'
+        'pdf': f'{pasta}/planta.pdf',
+        'imagem': f'{pasta}/imagem3d.png',
+        'tabela': f'{pasta}/blocos.xlsx',
+        'video': f'{pasta}/video.mp4'
     }
 
     return render_template('projeto.html', arquivos=arquivos, projeto_nome=projeto_id)
-
 
 @app.route('/visualizar/<tipo>')
 def visualizar(tipo):
@@ -79,13 +72,11 @@ def visualizar(tipo):
     salvar_historico(session['user'], tipo)
     return render_template('visualizar.html', tipo=tipo)
 
-
 @app.route('/ler_qr_camera')
 def ler_qr_camera():
     if 'user' not in session:
         return redirect('/')
     return render_template('camera_qr.html')
-
 
 @app.route('/salvar_qr_lido', methods=['POST'])
 def salvar_qr_lido():
@@ -98,17 +89,16 @@ def salvar_qr_lido():
         return redirect('/projeto')
     return jsonify({'error': 'QR inválido'}), 400
 
-
+# ✅ Esta rota serve qualquer arquivo dentro da pasta 'projetos/'
 @app.route('/projetos/<path:filename>')
 def arquivos_projeto(filename):
+    # A partir de 'projetos/', ele encontra inclusive subpastas
     return send_from_directory('projetos', filename)
-
 
 @app.route('/logout')
 def logout():
     session.pop('user', None)
     return redirect('/')
-
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
