@@ -40,6 +40,7 @@ def home():
         return redirect('/')
     historico = carregar_historico()
     historico_usuario = [h for h in historico if h['usuario'] == session['user']]
+    historico_usuario = historico_usuario[-10:][::-1]  # últimos 10, mais recentes primeiro
     return render_template('home.html', historico=historico_usuario)
 
 @app.route('/projeto')
@@ -99,6 +100,18 @@ def arquivos_projeto(filename):
 def logout():
     session.pop('user', None)
     return redirect('/')
+
+@app.route('/abrir_projeto', methods=['POST'])
+def abrir_projeto():
+    if 'user' not in session:
+        return redirect('/')
+    projeto = request.form.get('projeto')
+    if projeto:
+        salvar_historico(session['user'], projeto)
+        return redirect('/projeto')
+    return redirect('/home')
+
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
