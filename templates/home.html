@@ -78,6 +78,14 @@
             text-decoration: underline;
             padding: 0;
             font-family: inherit;
+            text-align: left;
+        }
+
+        .btn-historico small {
+            display: block;
+            color: #666;
+            font-size: 12px;
+            margin-top: 2px;
         }
 
         .btn-historico:hover {
@@ -110,7 +118,10 @@
                     <li>
                         <form method="POST" action="/abrir_projeto">
                             <input type="hidden" name="projeto" value="{{ item.projeto }}">
-                            <button type="submit" class="btn-historico">{{ item.projeto }}</button>
+                            <button type="submit" class="btn-historico">
+                                {{ item.projeto }}
+                                <small>Último acesso: {{ item.timestamp | replace('T', ' ')[:19] }}</small>
+                            </button>
                         </form>
                     </li>
                 {% endfor %}

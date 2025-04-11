@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, session, flash, jso
 from firebase_config import firebase_login
 import json
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
@@ -16,7 +17,11 @@ def carregar_historico():
 
 def salvar_historico(email, projeto):
     historico = carregar_historico()
-    historico.append({'usuario': email, 'projeto': projeto})
+    historico.append({
+        'usuario': email,
+        'projeto': projeto,
+        'timestamp': datetime.now().isoformat()
+    })
     with open(HISTORICO_FILE, 'w') as f:
         json.dump(historico, f)
 
@@ -38,10 +43,26 @@ def auth():
 def home():
     if 'user' not in session:
         return redirect('/')
+
     historico = carregar_historico()
-    historico_usuario = [h for h in historico if h['usuario'] == session['user']]
-    historico_usuario = historico_usuario[-10:][::-1]  # últimos 10, mais recentes primeiro
-    return render_template('home.html', historico=historico_usuario)
+    usuario = session['user']
+
+    # Filtrar apenas os acessos do usuário
+    historico_usuario = [h for h in historico if h['usuario'] == usuario]
+
+    # Agrupar por projeto (última ocorrência vale)
+    projetos_unicos = {}
+    for h in historico_usuario:
+        projetos_unicos[h['projeto']] = h.get('timestamp', None)
+
+    # Criar lista ordenada por data (mais recente primeiro)
+    historico_final = [
+        {"projeto": projeto, "timestamp": projetos_unicos[projeto]}
+        for projeto in projetos_unicos
+    ]
+    historico_final.sort(key=lambda x: x['timestamp'], reverse=True)
+
+    return render_template('home.html', historico=historico_final)
 
 @app.route('/projeto')
 def projeto():
@@ -110,8 +131,6 @@ def abrir_projeto():
         salvar_historico(session['user'], projeto)
         return redirect('/projeto')
     return redirect('/home')
-
-
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
