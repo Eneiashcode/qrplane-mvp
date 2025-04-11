@@ -47,14 +47,33 @@
                     window.location.href = response.url;
                 }
             });
-            html5QrcodeScanner.clear();
+            qrCodeScanner.stop().then(() => {
+                console.log("Scanner parado");
+            });
         }
 
-        const html5QrcodeScanner = new Html5QrcodeScanner("reader", {
-            fps: 10,
-            qrbox: 250
+        const qrCodeScanner = new Html5Qrcode("reader");
+
+        Html5Qrcode.getCameras().then(devices => {
+            if (devices && devices.length) {
+                // Tenta pegar uma câmera traseira (que contenha 'back' no label)
+                const backCamera = devices.find(device =>
+                    device.label.toLowerCase().includes('back')
+                ) || devices[0]; // Se não encontrar, pega a primeira
+
+                qrCodeScanner.start(
+                    backCamera.id,
+                    {
+                        fps: 10,
+                        qrbox: 250
+                    },
+                    onScanSuccess
+                );
+            }
+        }).catch(err => {
+            console.error("Erro ao acessar câmera:", err);
+            document.getElementById('reader').innerText = "Erro ao acessar a câmera.";
         });
-        html5QrcodeScanner.render(onScanSuccess);
     </script>
 </body>
 </html>

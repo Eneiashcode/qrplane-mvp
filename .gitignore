@@ -35,3 +35,7 @@ firebase_config.py
 *.env
 *.idea/
 *.swp
+
+# Permitir que a pasta de projetos e seus arquivos sejam enviados
+!projetos/
+!projetos/**/*
