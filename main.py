@@ -92,8 +92,8 @@ def salvar_qr_lido():
 # ✅ Esta rota serve qualquer arquivo dentro da pasta 'projetos/'
 @app.route('/projetos/<path:filename>')
 def arquivos_projeto(filename):
-    # A partir de 'projetos/', ele encontra inclusive subpastas
-    return send_from_directory('projetos', filename)
+    caminho_absoluto = os.path.join(os.getcwd(), 'projetos')
+    return send_from_directory(caminho_absoluto, filename)
 
 @app.route('/logout')
 def logout():
