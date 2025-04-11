@@ -3,6 +3,7 @@ from firebase_config import firebase_login
 import json
 import os
 from datetime import datetime
+import pytz
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
@@ -17,10 +18,15 @@ def carregar_historico():
 
 def salvar_historico(email, projeto):
     historico = carregar_historico()
+
+    # Ajuste de timezone para o Brasil
+    fuso_brasil = pytz.timezone('America/Sao_Paulo')
+    agora = datetime.now(fuso_brasil).strftime('%d/%m/%Y %H:%M')
+
     historico.append({
         'usuario': email,
         'projeto': projeto,
-        'timestamp': datetime.now().isoformat()
+        'timestamp': agora
     })
     with open(HISTORICO_FILE, 'w') as f:
         json.dump(historico, f)
@@ -47,15 +53,12 @@ def home():
     historico = carregar_historico()
     usuario = session['user']
 
-    # Filtrar apenas os acessos do usuário
-    historico_usuario = [h for h in historico if h['usuario'] == usuario]
-
-    # Agrupar por projeto (última ocorrência vale)
+    # Elimina duplicatas, mantendo o último acesso
     projetos_unicos = {}
-    for h in historico_usuario:
-        projetos_unicos[h['projeto']] = h.get('timestamp', None)
+    for h in historico:
+        if h['usuario'] == usuario:
+            projetos_unicos[h['projeto']] = h.get('timestamp')
 
-    # Criar lista ordenada por data (mais recente primeiro)
     historico_final = [
         {"projeto": projeto, "timestamp": projetos_unicos[projeto]}
         for projeto in projetos_unicos
@@ -63,6 +66,7 @@ def home():
     historico_final.sort(key=lambda x: x['timestamp'], reverse=True)
 
     return render_template('home.html', historico=historico_final)
+
 
 @app.route('/projeto')
 def projeto():
