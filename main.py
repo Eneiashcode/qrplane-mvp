@@ -1,36 +1,40 @@
 from flask import Flask, render_template, request, redirect, session, flash, jsonify, send_from_directory
-from firebase_config import firebase_login
-import json
-import os
+from firebase_config import firebase_login, db
 from datetime import datetime
 import pytz
+import os
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
-HISTORICO_FILE = 'historico.json'
+# 🔄 Carrega histórico do Firebase
+def carregar_historico(email):
+    try:
+        raw = db.child("historico").child(email.replace('.', '_')).get()
+        dados = raw.val() or {}
+        projetos = list(dados.values())
+        # Agrupa por projeto, pega último acesso
+        ultimos = {}
+        for h in projetos:
+            ultimos[h["projeto"]] = h["timestamp"]
+        historico = [{"projeto": p, "timestamp": ultimos[p]} for p in ultimos]
+        historico.sort(key=lambda x: x["timestamp"], reverse=True)
+        return historico
+    except Exception as e:
+        print("❌ Erro ao carregar histórico do Firebase:", e)
+        return []
 
-def carregar_historico():
-    if os.path.exists(HISTORICO_FILE):
-        with open(HISTORICO_FILE, 'r') as f:
-            return json.load(f)
-    return []
-
+# 🔄 Salva histórico no Firebase
 def salvar_historico(email, projeto):
-    historico = carregar_historico()
-
-    # Ajuste de timezone para o Brasil
     fuso_brasil = pytz.timezone('America/Sao_Paulo')
     agora = datetime.now(fuso_brasil).strftime('%d/%m/%Y %H:%M')
-
-    historico.append({
-        'usuario': email,
+    data = {
         'projeto': projeto,
         'timestamp': agora
-    })
-    with open(HISTORICO_FILE, 'w') as f:
-        json.dump(historico, f)
+    }
+    db.child("historico").child(email.replace('.', '_')).push(data)
 
+# 🔐 Login
 @app.route('/')
 def login():
     return render_template('login.html')
@@ -45,52 +49,34 @@ def auth():
     else:
         return render_template('login.html', erro='Email ou senha inválidos.')
 
+# 🏠 Tela inicial (home)
 @app.route('/home')
 def home():
     if 'user' not in session:
         return redirect('/')
+    historico = carregar_historico(session['user'])
+    return render_template('home.html', historico=historico)
 
-    historico = carregar_historico()
-    usuario = session['user']
-
-    # Elimina duplicatas, mantendo o último acesso
-    projetos_unicos = {}
-    for h in historico:
-        if h['usuario'] == usuario:
-            projetos_unicos[h['projeto']] = h.get('timestamp')
-
-    historico_final = [
-        {"projeto": projeto, "timestamp": projetos_unicos[projeto]}
-        for projeto in projetos_unicos
-    ]
-    historico_final.sort(key=lambda x: x['timestamp'], reverse=True)
-
-    return render_template('home.html', historico=historico_final)
-
-
+# 📂 Tela do projeto
 @app.route('/projeto')
 def projeto():
     if 'user' not in session:
         return redirect('/')
-
-    historico = carregar_historico()
-    projetos_usuario = [h for h in historico if h['usuario'] == session['user']]
-    if not projetos_usuario:
+    historico = carregar_historico(session['user'])
+    if not historico:
         return "Nenhum projeto encontrado."
-
-    ultimo_projeto = projetos_usuario[-1]['projeto']
+    ultimo_projeto = historico[-1]['projeto']
     projeto_id = ultimo_projeto.split("://")[-1]
     pasta = f'projetos/{projeto_id}'
-
     arquivos = {
         'pdf': f'{pasta}/planta.pdf',
         'imagem': f'{pasta}/imagem3d.png',
         'tabela': f'{pasta}/blocos.xlsx',
         'video': f'{pasta}/video.mp4'
     }
-
     return render_template('projeto.html', arquivos=arquivos, projeto_nome=projeto_id)
 
+# 🔍 Visualizar tipo de projeto
 @app.route('/visualizar/<tipo>')
 def visualizar(tipo):
     if 'user' not in session:
@@ -98,12 +84,14 @@ def visualizar(tipo):
     salvar_historico(session['user'], tipo)
     return render_template('visualizar.html', tipo=tipo)
 
+# 📷 Leitura via câmera
 @app.route('/ler_qr_camera')
 def ler_qr_camera():
     if 'user' not in session:
         return redirect('/')
     return render_template('camera_qr.html')
 
+# ✅ Salvar leitura de QRCode
 @app.route('/salvar_qr_lido', methods=['POST'])
 def salvar_qr_lido():
     if 'user' not in session:
@@ -115,17 +103,19 @@ def salvar_qr_lido():
         return redirect('/projeto')
     return jsonify({'error': 'QR inválido'}), 400
 
-# ✅ Esta rota serve qualquer arquivo dentro da pasta 'projetos/'
+# 📁 Servir arquivos do projeto
 @app.route('/projetos/<path:filename>')
 def arquivos_projeto(filename):
     caminho_absoluto = os.path.join(os.getcwd(), 'projetos')
     return send_from_directory(caminho_absoluto, filename)
 
+# 🔒 Logout
 @app.route('/logout')
 def logout():
     session.pop('user', None)
     return redirect('/')
 
+# ↩ Abrir projeto do histórico
 @app.route('/abrir_projeto', methods=['POST'])
 def abrir_projeto():
     if 'user' not in session:
@@ -136,6 +126,7 @@ def abrir_projeto():
         return redirect('/projeto')
     return redirect('/home')
 
+# 🚀 Roda app localmente ou no Render
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

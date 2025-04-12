@@ -1,139 +1,161 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>QrPlane - Início</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to bottom right, #e0f7fa, #ffffff);
-            color: #003366;
-        }
+  <meta charset="UTF-8">
+  <title>QrPlane - Início</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #ffffff;
+      color: #111;
+    }
 
-        .header {
-            background-color: #003366;
-            color: white;
-            text-align: center;
-            padding: 25px 10px;
-            font-size: 22px;
-        }
+    .header {
+      text-align: center;
+      padding: 30px 0 10px;
+    }
 
-        .container {
-            width: 90%;
-            max-width: 400px;
-            margin: 40px auto;
-            padding: 20px;
-            text-align: center;
-        }
+    .header img {
+      width: 160px;
+      margin-bottom: 10px;
+    }
 
-        .botao-camera {
-            display: block;
-            width: 100%;
-            max-width: 100%;
-            padding: 16px;
-            font-size: 18px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            text-decoration: none;
-            box-sizing: border-box;
-        }
+    .container {
+      width: 90%;
+      max-width: 420px;
+      margin: 0 auto;
+    }
 
-        .botao-camera:hover {
-            background-color: #1e7e34;
-            transform: scale(1.02);
-        }
+    .card {
+      background-color: #f8f8f8;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+      margin-top: 20px;
+      text-align: center;
+    }
 
-        .historico {
-            text-align: left;
-            background-color: #f1f1f1;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 15px;
-        }
+    .card h3 {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
 
-        .historico h3 {
-            margin-top: 0;
-        }
+    .botao-destaque {
+      background-color: #111;
+      color: white;
+      padding: 14px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.3s;
+    }
 
-        .historico ul {
-            padding-left: 20px;
-        }
+    .botao-destaque:hover {
+      background-color: #333;
+    }
 
-        .historico form {
-            display: inline;
-        }
+    .historico-lista {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 15px;
+      text-align: left;
+    }
 
-        .btn-historico {
-            background: none;
-            border: none;
-            color: #007bff;
-            font-size: 15px;
-            cursor: pointer;
-            text-decoration: underline;
-            padding: 0;
-            font-family: inherit;
-            text-align: left;
-        }
+    .item-projeto {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
 
-        .btn-historico small {
-            display: block;
-            color: #666;
-            font-size: 12px;
-            margin-top: 2px;
-        }
+    .item-projeto img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
 
-        .btn-historico:hover {
-            color: #0056b3;
-        }
+    .item-projeto button {
+      background: none;
+      border: none;
+      color: #007bff;
+      font-size: 15px;
+      cursor: pointer;
+      text-align: left;
+      padding: 0;
+    }
 
-        .logout {
-            margin-top: 30px;
-            font-size: 14px;
-        }
+    .item-projeto button:hover {
+      color: #0056b3;
+    }
 
-        .logout a {
-            text-decoration: none;
-            color: #007bff;
-        }
-    </style>
+    .item-projeto small {
+      color: #555;
+      font-size: 12px;
+      display: block;
+    }
+
+    .btn-logout {
+      display: block;
+      margin: 30px auto 0;
+      background: #111;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      text-align: center;
+      font-size: 14px;
+      width: fit-content;
+    }
+
+    .btn-logout:hover {
+      background: #333;
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-        QrPlane - Bem-vindo
+
+<div class="header">
+  <img src="/static/img/logo.png" alt="Logo do QrPlane" class="logo-topo">
+</div>
+
+  <div class="container">
+
+    <div class="card destaque">
+      <h3>📷 Escanear Novo Projeto</h3>
+      <a href="/ler_qr_camera" class="botao-destaque">Ler QRPlane</a>
     </div>
 
-    <div class="container">
-        <a href="/ler_qr_camera" class="botao-camera">📷 Ler QRPlane</a>
-
-        <div class="historico">
-            <h3>🕘 Últimos Projetos Escaneados:</h3>
-            <ul>
-                {% for item in historico %}
-                    <li>
-                        <form method="POST" action="/abrir_projeto">
-                            <input type="hidden" name="projeto" value="{{ item.projeto }}">
-                            <button type="submit" class="btn-historico">
-                                {{ item.projeto }}
-                                {% if item.timestamp %}
-                                    <small>Último acesso: {{ item.timestamp | replace('T', ' ') | truncate(19, True) }}</small>
-                                {% endif %}
-                            </button>
-
-                        </form>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <div class="logout">
-            <a href="/logout">Sair</a>
-        </div>
+    <div class="card">
+      <h3>🕘 Últimos Projetos Escaneados:</h3>
+      <ul class="historico-lista">
+        {% for item in historico %}
+        <li class="item-projeto">
+          <img src="/static/img/icon-pdf.png" alt="Miniatura">
+          <form method="POST" action="/abrir_projeto">
+            <input type="hidden" name="projeto" value="{{ item.projeto }}">
+            <button type="submit">
+              <strong>{{ item.projeto }}</strong>
+              {% if item.timestamp %}
+              <small>Último acesso: {{ item.timestamp }}</small>
+              {% endif %}
+            </button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
     </div>
+
+    <a href="/logout" class="btn-logout">Sair</a>
+
+  </div>
 </body>
 </html>
