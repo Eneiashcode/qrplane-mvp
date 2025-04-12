@@ -32,14 +32,13 @@
     <div id="reader"></div>
 
     <div class="back">
-        <a href="/home">← Voltar</a>
+        <a href="/home" class="btn-voltar">← Voltar</a>
     </div>
 
     <script>
         const qrCodeScanner = new Html5Qrcode("reader");
 
         function onScanSuccess(decodedText, decodedResult) {
-            console.log(`QR Lido: ${decodedText}`);
             fetch('/salvar_qr_lido', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -47,9 +46,8 @@
             }).then(response => {
                 if (response.redirected) {
                     qrCodeScanner.stop().then(() => {
-                        console.log("Scanner parado");
                         window.location.href = response.url;
-                    }).catch(err => console.error("Erro ao parar scanner:", err));
+                    });
                 }
             });
         }
