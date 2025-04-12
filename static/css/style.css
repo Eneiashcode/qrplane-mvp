@@ -1,0 +1,46 @@
+.btn-historico {
+    background: none;
+    border: none;
+    color: #007bff;
+    font-size: 15px;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+}
+
+.btn-historico:hover {
+    color: #0056b3;
+}
+
+.btn-voltar {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: white;
+    font-size: 15px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease;
+}
+
+.btn-voltar:hover {
+    background-color: #5a6268;
+}
+
+/* 🔄 Novo header centralizado com logo maior */
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px 0;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.logo-topo {
+    width: 220px;
+    max-width: 90%;
+}

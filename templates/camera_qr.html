@@ -36,6 +36,8 @@
     </div>
 
     <script>
+        const qrCodeScanner = new Html5Qrcode("reader");
+
         function onScanSuccess(decodedText, decodedResult) {
             console.log(`QR Lido: ${decodedText}`);
             fetch('/salvar_qr_lido', {
@@ -44,20 +46,23 @@
                 body: JSON.stringify({ qr_data: decodedText })
             }).then(response => {
                 if (response.redirected) {
-                    window.location.href = response.url;
+                    qrCodeScanner.stop().then(() => {
+                        console.log("Scanner parado");
+                        window.location.href = response.url;
+                    }).catch(err => console.error("Erro ao parar scanner:", err));
                 }
             });
-            html5QrcodeScanner.clear();
         }
 
-        const html5QrcodeScanner = new Html5QrcodeScanner("reader", {
-            fps: 10,
-            qrbox: 250,
-            rememberLastUsedCamera: true, // 🔹 reabre a última usada
-            supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+        Html5Qrcode.getCameras().then(devices => {
+            if (devices && devices.length) {
+                const backCam = devices.find(d => d.label.toLowerCase().includes('back')) || devices[0];
+                qrCodeScanner.start(backCam.id, { fps: 10, qrbox: 250 }, onScanSuccess);
+            }
+        }).catch(err => {
+            console.error("Erro ao acessar câmera:", err);
+            document.getElementById("reader").innerText = "Erro ao acessar a câmera.";
         });
-
-        html5QrcodeScanner.render(onScanSuccess);
     </script>
 </body>
 </html>
