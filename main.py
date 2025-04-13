@@ -13,7 +13,6 @@ def carregar_historico(email):
         raw = db.child("historico").child(email.replace('.', '_')).get()
         dados = raw.val() or {}
         projetos = list(dados.values())
-        # Agrupa por projeto, pega último acesso
         ultimos = {}
         for h in projetos:
             ultimos[h["projeto"]] = h["timestamp"]
@@ -103,11 +102,10 @@ def salvar_qr_lido():
         return redirect('/projeto')
     return jsonify({'error': 'QR inválido'}), 400
 
-# 📁 Servir arquivos do projeto
+# 📁 Servir arquivos do projeto (corrigido)
 @app.route('/projetos/<path:filename>')
 def arquivos_projeto(filename):
-    caminho_absoluto = os.path.join(os.getcwd(), 'projetos')
-    return send_from_directory(caminho_absoluto, filename)
+    return send_from_directory('projetos', filename)
 
 # 🔒 Logout
 @app.route('/logout')
