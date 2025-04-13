@@ -4,6 +4,8 @@ from datetime import datetime
 import pytz
 import os
 
+MODO_BYPASS = False  # ✅ Coloque como False para desligar o modo de bypass
+
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
@@ -53,8 +55,15 @@ def auth():
 def home():
     if 'user' not in session:
         return redirect('/')
+
+    # ✅ Se o modo bypass estiver ativado, simula leitura e vai pra tela do projeto
+    if MODO_BYPASS:
+        salvar_historico(session['user'], "qrplane://projeto-fake-001")
+        return redirect('/projeto')
+
+    # 🔁 Modo normal com histórico
     historico = carregar_historico(session['user'])
-    return render_template('home.html', historico=historico)
+    return render_template('home.html', historico=historico, modo_bypass=MODO_BYPASS)
 
 # 📂 Tela do projeto
 @app.route('/projeto')
@@ -123,6 +132,60 @@ def abrir_projeto():
         salvar_historico(session['user'], projeto)
         return redirect('/projeto')
     return redirect('/home')
+
+@app.route('/assistir_video', methods=['GET', 'POST'])
+def assistir_video():
+    if 'user' not in session:
+        return redirect('/')
+
+    projeto = request.args.get('projeto') or request.form.get('projeto')
+    if not projeto:
+        return "Projeto não especificado.", 400
+
+    projeto_id = projeto.split("://")[-1]
+    caminho_video = f'{projeto_id}/video.mp4'
+    email = session['user']
+    email_formatado = email.replace('.', '_')
+
+    try:
+        confirmacao = db.child("videos_assistidos").child(email_formatado).child(projeto_id).get().val()
+        data_confirmada = confirmacao.get('video_confirmado') if confirmacao else None
+    except Exception as e:
+        print("❌ Erro ao verificar confirmação:", e)
+        data_confirmada = None
+
+    return render_template('visualizar_video.html',
+                           projeto=projeto_id,
+                           video=caminho_video,
+                           confirmacao=data_confirmada)
+
+
+@app.route('/registrar_assistencia', methods=['POST'])
+def registrar_assistencia():
+    if 'user' not in session:
+        return jsonify({'error': 'Usuário não logado'}), 403
+
+    data = request.get_json()
+    projeto = data.get('projeto')
+    if not projeto:
+        return jsonify({'error': 'Projeto não informado'}), 400
+
+    projeto_id = projeto.split("://")[-1]
+    email = session['user']
+    email_formatado = email.replace('.', '_')
+
+    fuso_brasil = pytz.timezone('America/Sao_Paulo')
+    agora = datetime.now(fuso_brasil).strftime('%d/%m/%Y %H:%M')
+
+    try:
+        db.child("videos_assistidos").child(email_formatado).child(projeto_id).set({
+            'video_confirmado': agora
+        })
+        return jsonify({'status': 'ok'})
+    except Exception as e:
+        print("❌ Erro ao registrar visualização:", e)
+        return jsonify({'error': 'Erro ao salvar no Firebase'}), 500
+
 
 # 🚀 Roda app localmente ou no Render
 if __name__ == '__main__':

@@ -28,6 +28,16 @@
       margin: 0 auto;
     }
 
+    .aviso-dev {
+      background: #ffeeba;
+      color: #856404;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin: 20px 0 0;
+      font-size: 14px;
+      text-align: center;
+    }
+
     .card {
       background-color: #f8f8f8;
       border-radius: 12px;
@@ -123,15 +133,25 @@
 </head>
 <body>
 
-<div class="header">
-  <img src="/static/img/logo.png" alt="Logo do QrPlane" class="logo-topo">
-</div>
+  <div class="header">
+    <img src="/static/img/logo.png" alt="Logo do QrPlane" class="logo-topo">
+  </div>
 
   <div class="container">
 
+    {% if modo_bypass %}
+      <div class="aviso-dev">
+        ⚠️ MODO DE DESENVOLVIMENTO ATIVADO: Leitura de QR Code desativada. Redirecionamento automático em uso.
+      </div>
+    {% endif %}
+
     <div class="card destaque">
       <h3>📷 Escanear Novo Projeto</h3>
-      <a href="/ler_qr_camera" class="botao-destaque">Ler QRPlane</a>
+      {% if not modo_bypass %}
+        <a href="/ler_qr_camera" class="botao-destaque">Ler QRPlane</a>
+      {% else %}
+        <p><em>Escaneamento desativado no modo de teste</em></p>
+      {% endif %}
     </div>
 
     <div class="card">
@@ -145,7 +165,7 @@
             <button type="submit">
               <strong>{{ item.projeto }}</strong>
               {% if item.timestamp %}
-              <small>Último acesso: {{ item.timestamp }}</small>
+                <small>Último acesso: {{ item.timestamp }}</small>
               {% endif %}
             </button>
           </form>

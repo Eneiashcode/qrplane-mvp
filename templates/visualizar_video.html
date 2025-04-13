@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Assistir Vídeo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+            padding: 30px;
+            background-color: #f9f9f9;
+        }
+
+        .logo {
+            width: 160px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #111;
+        }
+
+        video {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn-confirmar {
+            display: inline-block;
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #111;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: not-allowed;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .btn-confirmar.ativo {
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        .confirmado {
+            color: green;
+            font-size: 15px;
+            margin-top: 10px;
+        }
+
+        .btn-voltar {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            font-size: 14px;
+            border: none;
+            border-radius: 10px;
+            text-decoration: none;
+        }
+
+        .btn-voltar:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+    <img src="/static/img/logo.png" alt="Logo QrPlane" class="logo">
+    <h2>🎥 Assistir vídeo do projeto: <strong>{{ projeto }}</strong></h2>
+
+    <video id="meuVideo" controls>
+        <source src="/projetos/{{ video }}" type="video/mp4">
+        Seu navegador não suporta a reprodução de vídeo.
+    </video>
+
+    {% if confirmacao %}
+        <p class="confirmado">✅ Assistido e confirmado em {{ confirmacao }}</p>
+    {% else %}
+        <br>
+        <button id="btnConfirmar" class="btn-confirmar" disabled>
+            ✅ Confirmar que assisti até o fim
+        </button>
+    {% endif %}
+
+    <br>
+    <a href="/home" class="btn-voltar">← Voltar</a>
+
+    <script>
+        const video = document.getElementById('meuVideo');
+        const btn = document.getElementById('btnConfirmar');
+
+        if (btn) {
+            video.onended = function () {
+                btn.classList.add('ativo');
+                btn.disabled = false;
+            };
+
+            btn.addEventListener('click', () => {
+                fetch('/registrar_assistencia', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ projeto: "{{ projeto }}" })
+                }).then(res => {
+                    if (res.ok) {
+                        alert("✅ Registro salvo com sucesso!");
+                        window.location.href = "/home";
+                    } else {
+                        alert("❌ Ocorreu um erro ao registrar.");
+                    }
+                });
+            });
+        }
+    </script>
+
+</body>
+</html>

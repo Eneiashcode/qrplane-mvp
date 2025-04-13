@@ -7,44 +7,68 @@
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #ffffff;
+            background-color: #f7f7f7;
+            padding: 30px 20px;
             text-align: center;
-            padding: 30px;
-            color: #111;
         }
 
-        .logo-topo {
+        .logo {
             width: 160px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         h2 {
             color: #111;
-            margin-bottom: 25px;
+            font-size: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .btn {
-            display: block;
-            width: 80%;
-            max-width: 300px;
-            margin: 15px auto;
-            padding: 15px;
-            font-size: 16px;
-            background-color: #111;
-            color: white;
-            border: none;
-            border-radius: 10px;
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .card-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 15px;
             text-decoration: none;
-            transition: background-color 0.3s ease;
+            color: #111;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease;
         }
 
-        .btn:hover {
-            background-color: #333;
+        .card-link:hover {
+            transform: scale(1.03);
+        }
+
+        .card-link span {
+            margin-top: 8px;
+            font-size: 15px;
+            font-weight: 500;
         }
 
         .btn-voltar {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
             background-color: #6c757d;
-            margin-top: 40px;
+            color: white;
+            font-size: 14px;
+            border: none;
+            border-radius: 10px;
+            text-decoration: none;
         }
 
         .btn-voltar:hover {
@@ -54,19 +78,35 @@
 </head>
 <body>
 
-    <!-- ✅ Logo do QrPlane no topo -->
-    <img src="/static/img/logo.png" alt="Logo do QrPlane" class="logo-topo">
+    <img src="/static/img/logo.png" alt="Logo QrPlane" class="logo">
 
-    <h2>📂 Projeto: {{ projeto_nome }}</h2>
+    <h2>📁 Projeto: {{ projeto_nome }}</h2>
 
-    <!-- ✅ Botões atualizados com estilo escuro -->
-    <a href="{{ url_for('arquivos_projeto', filename=arquivos['pdf'].split('projetos/')[1]) }}" class="btn" target="_blank">📄 Ver Planta PDF</a>
-    <a href="{{ url_for('arquivos_projeto', filename=arquivos['imagem'].split('projetos/')[1]) }}" class="btn" target="_blank">🖼️ Ver Imagem 3D</a>
-    <a href="{{ url_for('arquivos_projeto', filename=arquivos['tabela'].split('projetos/')[1]) }}" class="btn" target="_blank">📊 Ver Tabela de Blocos</a>
-    <a href="{{ url_for('arquivos_projeto', filename=arquivos['video'].split('projetos/')[1]) }}" class="btn" target="_blank">🎥 Ver Vídeo</a>
+<div class="grid">
+    <a href="{{ url_for('arquivos_projeto', filename=arquivos['pdf'].split('projetos/')[1]) }}" class="card-link" target="_blank">
+        📄
+        <span>Planta PDF</span>
+    </a>
+    <a href="{{ url_for('arquivos_projeto', filename=arquivos['imagem'].split('projetos/')[1]) }}" class="card-link" target="_blank">
+        🖼️
+        <span>Imagem 3D</span>
+    </a>
+    <a href="{{ url_for('arquivos_projeto', filename=arquivos['tabela'].split('projetos/')[1]) }}" class="card-link" target="_blank">
+        📊
+        <span>Tabela de Blocos</span>
+    </a>
 
-    <!-- ✅ Botão estilizado de voltar -->
-    <a href="/home" class="btn btn-voltar">← Voltar</a>
+    <!-- ✅ Substituído: vídeo agora redireciona para rota interna -->
+    <form method="GET" action="/assistir_video">
+        <input type="hidden" name="projeto" value="qrplane://{{ projeto_nome }}">
+        <button type="submit" class="card-link" style="width: 100%;">
+            🎥
+            <span>Vídeo Explicativo</span>
+        </button>
+    </form>
+</div>
+
+<a href="/home" class="btn-voltar">← Voltar</a>
 
 </body>
 </html>
