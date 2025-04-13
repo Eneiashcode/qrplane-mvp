@@ -7,13 +7,20 @@
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #f9f9f9;
+            background-color: #ffffff;
             text-align: center;
             padding: 30px;
+            color: #111;
+        }
+
+        .logo-topo {
+            width: 160px;
+            margin-bottom: 30px;
         }
 
         h2 {
-            color: #003366;
+            color: #111;
+            margin-bottom: 25px;
         }
 
         .btn {
@@ -23,37 +30,43 @@
             margin: 15px auto;
             padding: 15px;
             font-size: 16px;
-            background-color: #007bff;
+            background-color: #111;
             color: white;
             border: none;
             border-radius: 10px;
             text-decoration: none;
+            transition: background-color 0.3s ease;
         }
 
         .btn:hover {
-            background-color: #0056b3;
+            background-color: #333;
         }
 
-        .back {
-            margin-top: 30px;
+        .btn-voltar {
+            background-color: #6c757d;
+            margin-top: 40px;
         }
 
-        .back a {
-            text-decoration: none;
-            color: #007bff;
+        .btn-voltar:hover {
+            background-color: #5a6268;
         }
     </style>
 </head>
 <body>
+
+    <!-- ✅ Logo do QrPlane no topo -->
+    <img src="/static/img/logo.png" alt="Logo do QrPlane" class="logo-topo">
+
     <h2>📂 Projeto: {{ projeto_nome }}</h2>
 
+    <!-- ✅ Botões atualizados com estilo escuro -->
     <a href="{{ url_for('arquivos_projeto', filename=arquivos['pdf'].split('projetos/')[1]) }}" class="btn" target="_blank">📄 Ver Planta PDF</a>
     <a href="{{ url_for('arquivos_projeto', filename=arquivos['imagem'].split('projetos/')[1]) }}" class="btn" target="_blank">🖼️ Ver Imagem 3D</a>
     <a href="{{ url_for('arquivos_projeto', filename=arquivos['tabela'].split('projetos/')[1]) }}" class="btn" target="_blank">📊 Ver Tabela de Blocos</a>
     <a href="{{ url_for('arquivos_projeto', filename=arquivos['video'].split('projetos/')[1]) }}" class="btn" target="_blank">🎥 Ver Vídeo</a>
 
-    <div class="back">
-        <a href="/home" class="btn-voltar">← Voltar</a>
-    </div>
+    <!-- ✅ Botão estilizado de voltar -->
+    <a href="/home" class="btn btn-voltar">← Voltar</a>
+
 </body>
 </html>
